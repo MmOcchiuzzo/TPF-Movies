@@ -1,15 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTicket } from '@fortawesome/free-solid-svg-icons'; 
+import { faTicket } from '@fortawesome/free-solid-svg-icons';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState(''); // Estado para el término de búsqueda
-  const [searchResults, setSearchResults] = useState([]); // Estado para los resultados de búsqueda
-  const [loading, setLoading] = useState(false); // Estado para el cargando
-  const [error, setError] = useState(null); // Estado para errores
+  const [searchTerm, setSearchTerm] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [scrolled, setScrolled] = useState(false);
 
-  const logo = <FontAwesomeIcon icon={faTicket} style={{color: "#065F46",}} size="2xl"/>;
+  const logoRef = useRef(null);
+  const [logoHeight, setLogoHeight] = useState(0);
+
+  const logo = <FontAwesomeIcon icon={faTicket} style={{ color: "#065F46" }} size="2xl" />;
+
+  // Detectar altura del logo
+  useEffect(() => {
+    if (logoRef.current) {
+      setLogoHeight(logoRef.current.offsetHeight);
+    }
+  }, []);
+
+  // Detectar scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Limpiar resultados si input queda vacío
+  useEffect(() => {
+    if (searchTerm.trim() === '') {
+      setSearchResults([]);
+      setError(null);
+    }
+  }, [searchTerm]);
 
   const handleSearch = async () => {
     if (searchTerm.trim() !== '') {
@@ -33,114 +61,110 @@ const Header = () => {
       }
     }
   };
-  
+
+  const handleSelectMovie = () => {
+    setSearchResults([]);
+    setSearchTerm('');
+  };
+
   return (
-    <header className="bg-emerald-900 text-white">
-      <div className="sticky top-0 z-50 bg-emerald-600 p-4 shadow-md">
-        <div className="container mx-auto flex justify-center items-center">
-          <div className="logo flex items-center space-x-4">
-            {logo}
-            <a className="text-4xl font-bold text-transparent bg-clip-text bg-emerald-800">
-              Movies App
-            </a>
-          </div>
+    <header className="sticky top-0 z-50">
+      {/* Barra del logo */}
+      <div
+        ref={logoRef}
+        className={`bg-emerald-600 p-4 shadow-md flex justify-center items-center transition-transform duration-300 ${
+          scrolled ? '-translate-y-full' : 'translate-y-0'
+        }`}
+      >
+        <div className="logo flex items-center space-x-4">
+          {logo}
+          <span className="text-4xl font-bold text-transparent bg-clip-text bg-emerald-800">
+            Movies App
+          </span>
         </div>
       </div>
 
-    {/* Barra de navegación y búsqueda */}
-      <div className="container mx-auto flex flex-col md:flex-row md:justify-between md:items-center p-4 gap-3">
+      {/* Barra de navegación y búsqueda */}
+      <div
+        className={`bg-emerald-600 p-4 container mx-auto flex flex-col md:flex-row md:justify-between md:items-center gap-3 transition-transform duration-300`}
+        style={{
+          transform: scrolled ? `translateY(-${logoHeight}px)` : 'translateY(0)',
+        }}
+      >
         {/* Menú de navegación */}
-        <nav className={`flex space-x-2 ${menuOpen ? 'block' : 'hidden md:flex'}`}>
-        <button
-            onClick={handleSearch}
-            className="bg-emerald-600 hover:bg-emerald-900 text-white p-4 rounded-md"
+        <nav className="flex space-x-2">
+          <button
+            onClick={() => window.location.href = '/'}
+            className="bg-emerald-700 hover:bg-emerald-900 text-white p-4 rounded-md"
           >
-            <a href="/" className="hover:text-emerald-400">Home</a>
+            Home
           </button>
-          
+
         </nav>
 
-        {/* Input de búsqueda y botón */}
+        {/* Input de búsqueda */}
         <div className="flex items-center space-x-2">
           <input
             type="text"
             placeholder="Search for movies..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') handleSearch();
-            }}
+            onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
             className="w-400 p-2 rounded-md bg-slate-400 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-emerald-400"
           />
           <button
             onClick={handleSearch}
-            className="bg-emerald-600 hover:bg-emerald-900 text-white p-2 rounded-md"
+            className="bg-emerald-700 hover:bg-emerald-900 text-white p-2 rounded-md"
           >
             Search
           </button>
+
         </div>
 
-        <div className="md:hidden">
-          <button
-            className="text-emerald-600 hover:text-white focus:outline-none focus:text-white"
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
-            <svg
-              className="h-6 w-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M4 6h16M4 12h16m-7 6h7"
-              ></path>
-            </svg>
-          </button>
-        </div>
+        
       </div>
 
-      {/* Contenido dinámico */}
-      {loading && (
-        <p className="text-center text-xl text-customBlueMedium">Loading...</p>
-      )}
-      {error && <p className="text-center text-xl text-red-500">{error}</p>}
+      {/* Mensajes de carga y error */}
+      {loading && <p className="text-center text-xl text-customBlueMedium mt-2">Loading...</p>}
+      {error && <p className="text-center text-xl text-red-500 mt-2">{error}</p>}
 
-      <div>
-        {searchResults.length > 0 ? (
-          <div className="px-4 md:px-8 lg:px-16 pb-8">
-          {/* Fondo transparente con blur sobre toda la grilla */}
-          <div className="bg-emerald-900 bg-opacity-40 backdrop-blur-md rounded-xl p-4">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-              {searchResults.map((movie) => (
-                <div
-                  key={movie.id}
-                  className="p-2 rounded-lg shadow-md hover:shadow-lg transition duration-300"
-                >
-                  <img
-                    src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
-                    alt={movie.title}
-                    className="w-full h-auto rounded-md mb-2"
-                  />
-                  <h2 className="text-sm font-semibold text-white text-center truncate">
-                    {movie.title}
-                  </h2>
-                </div>
-              ))}
-            </div>
+      {/* Grilla de resultados */}
+      {searchResults.length > 0 && (
+        <div
+          className="absolute left-0 right-0 bg-emerald-900 bg-opacity-60 backdrop-blur-md p-6 overflow-y-auto z-40 max-h-[75vh]"
+          style={{ top: scrolled ? `${logoHeight}px` : `${logoHeight + 75}px` }}
+        >
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {searchResults.map((movie) => (
+              <Link
+                key={movie.id}
+                to={`/movie/${movie.id}`}
+                onClick={handleSelectMovie}
+                className="p-2 rounded-lg shadow-md hover:shadow-lg transition duration-300 bg-emerald-800 bg-opacity-50 hover:bg-opacity-70"
+              >
+                <img
+                  src={`https://image.tmdb.org/t/p/w300${movie.poster_path}`}
+                  alt={movie.title}
+                  className="w-full h-auto rounded-md mb-2"
+                />
+                <h2 className="text-sm font-semibold text-white text-center truncate">
+                  {movie.title}
+                </h2>
+              </Link>
+            ))}
           </div>
         </div>
-        
-        ) : searchTerm && !loading && !error ? (
-          <p className="text-center text-xl text-red-300">No results found</p>
-        ) : null}
-      </div>
-  </header>
+      )}
+    </header>
   );
 };
 
 export default Header;
+
+
+
+
+
+
+
 
