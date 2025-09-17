@@ -40,7 +40,7 @@ function Home() {
     navigate(`/movie/${id}`);
   };
 
-  const maxPagesVisible = 5;
+  const maxPagesVisible = 3;
   const startPage = Math.max(1, currentPage - Math.floor(maxPagesVisible / 2));
   const endPage = Math.min(totalPages, startPage + maxPagesVisible - 1);
   const pageNumbers = [];
@@ -74,30 +74,36 @@ function Home() {
         ))}
       </div>
 
-      <div className="flex justify-center items-center mt-8 space-x-4">
+      <div className="flex justify-center items-center mt-8 space-x-1 overflow-hidden">
         <button 
           onClick={() => handlePageChange(currentPage - 1)} 
-          className="bg-emerald-600 hover:bg-emerald-900 text-white px-4 py-2 rounded-md"
+          className="flex-shrink-0 bg-emerald-600 hover:bg-emerald-900 text-white px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm"
           disabled={currentPage === 1}
         >
           Back
         </button>
 
-        {startPage > 1 && <span className="px-2 text-black">...</span>}
+        {startPage > 1 && <span className="flex-shrink-0 text-black px-1">…</span>}
+
         {pageNumbers.map((page) => (
           <button 
             key={page} 
             onClick={() => handlePageChange(page)} 
-            className={`px-4 py-2 rounded-md ${currentPage === page ? 'bg-emerald-900 text-white' : 'bg-emerald-600 text-white hover:bg-emerald-800'}`}
+            className={`flex-shrink-0 px-2 s:px-3 py-1 rounded-md text-xs sm:text-sm ${
+              currentPage === page 
+                ? 'bg-emerald-900 text-white' 
+                : 'bg-emerald-600 text-white hover:bg-emerald-800'
+            }`}
           >
             {page}
           </button>
         ))}
-        {endPage < totalPages && <span className="px-2 text-black">...</span>}
+
+        {endPage < totalPages && <span className="flex-shrink-0 text-black px-1">…</span>}
 
         <button 
           onClick={() => handlePageChange(currentPage + 1)} 
-          className="bg-emerald-600 hover:bg-emerald-900 text-white px-4 py-2 rounded-md"
+          className="flex-shrink-0 bg-emerald-600 hover:bg-emerald-900 text-white px-2 sm:px-3 py-1 rounded-md text-xs sm:text-sm"
           disabled={currentPage === totalPages}
         >
           Next
