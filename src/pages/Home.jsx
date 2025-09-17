@@ -40,7 +40,7 @@ function Home() {
     navigate(`/movie/${id}`);
   };
 
-  const maxPagesVisible = 3;
+  const maxPagesVisible = 4;
   const startPage = Math.max(1, currentPage - Math.floor(maxPagesVisible / 2));
   const endPage = Math.min(totalPages, startPage + maxPagesVisible - 1);
   const pageNumbers = [];
