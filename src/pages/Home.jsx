@@ -77,7 +77,7 @@ function Home() {
       <div className="flex justify-center items-center mt-8 space-x-4">
         <button 
           onClick={() => handlePageChange(currentPage - 1)} 
-          className="bg-emerald-700 hover:bg-emerald-900 text-white px-4 py-2 rounded-md"
+          className="bg-emerald-600 hover:bg-emerald-900 text-white px-4 py-2 rounded-md"
           disabled={currentPage === 1}
         >
           Back
@@ -88,7 +88,7 @@ function Home() {
           <button 
             key={page} 
             onClick={() => handlePageChange(page)} 
-            className={`px-4 py-2 rounded-md ${currentPage === page ? 'bg-emerald-800 text-white' : 'bg-emerald-700 text-white hover:bg-emerald-900'}`}
+            className={`px-4 py-2 rounded-md ${currentPage === page ? 'bg-emerald-900 text-white' : 'bg-emerald-600 text-white hover:bg-emerald-800'}`}
           >
             {page}
           </button>
@@ -97,7 +97,7 @@ function Home() {
 
         <button 
           onClick={() => handlePageChange(currentPage + 1)} 
-          className="bg-emerald-700 hover:bg-emerald-900 text-white px-4 py-2 rounded-md"
+          className="bg-emerald-600 hover:bg-emerald-900 text-white px-4 py-2 rounded-md"
           disabled={currentPage === totalPages}
         >
           Next

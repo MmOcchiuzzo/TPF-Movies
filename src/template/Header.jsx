@@ -78,7 +78,7 @@ const Header = () => {
       >
         <div className="logo flex items-center space-x-4">
           {logo}
-          <span className="text-4xl font-bold text-transparent bg-clip-text bg-emerald-800">
+          <span className="text-3xl font-bold text-transparent bg-clip-text bg-emerald-800">
             Movies App
           </span>
         </div>
@@ -86,7 +86,7 @@ const Header = () => {
 
       {/* Barra de navegación y búsqueda */}
       <div
-        className={`bg-emerald-600 p-4 container mx-auto flex flex-col md:flex-row md:justify-between md:items-center gap-3 transition-transform duration-300`}
+        className={`bg-customBlueExtraLight p-4 container mx-auto flex flex-col md:flex-row md:justify-between md:items-center gap-3 transition-transform duration-300`}
         style={{
           transform: scrolled ? `translateY(-${logoHeight}px)` : 'translateY(0)',
         }}
@@ -95,7 +95,7 @@ const Header = () => {
         <nav className="flex space-x-2">
           <button
             onClick={() => window.location.href = '/'}
-            className="bg-emerald-700 hover:bg-emerald-900 text-white p-4 rounded-md"
+            className="bg-emerald-600 hover:bg-emerald-800 text-white p-4 rounded-md"
           >
             Home
           </button>
@@ -110,11 +110,11 @@ const Header = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-            className="w-400 p-2 rounded-md bg-slate-400 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-emerald-400"
+            className="w-400 p-2 rounded-md bg-gray-400 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-gray-500"
           />
           <button
             onClick={handleSearch}
-            className="bg-emerald-700 hover:bg-emerald-900 text-white p-2 rounded-md"
+            className="bg-emerald-600 hover:bg-emerald-800 text-white p-2 rounded-md"
           >
             Search
           </button>
