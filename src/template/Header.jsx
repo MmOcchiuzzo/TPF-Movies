@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTicket } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
+import { API_KEY, BASE_URL } from '../utils/config';
 
 const Header = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -45,7 +46,7 @@ const Header = () => {
       setError(null);
       try {
         const response = await fetch(
-          `https://api.themoviedb.org/3/search/movie?api_key=e2744d03410fc77deeba1202f8a50cfb&query=${encodeURIComponent(searchTerm)}`
+          `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(searchTerm)}`
         );
         const data = await response.json();
         console.log('Resultados de la API:', data); // para verificar en consola
